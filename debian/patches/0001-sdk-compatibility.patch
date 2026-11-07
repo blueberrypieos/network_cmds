@@ -1,0 +1,77 @@
+Description: Match netem models to xnu and fix ndp/netstat argument types
+Author: The Blueberry Pie OS Authors
+Forwarded: not-needed
+Last-Update: 2026-11-01
+
+--- a/ifconfig.tproj/ifconfig.c
++++ b/ifconfig.tproj/ifconfig.c
+@@ -25,6 +25,7 @@
+  *
+  * @APPLE_OSREFERENCE_LICENSE_HEADER_END@
+  */
++/* Modified 2026-11-01: the iod and fpd netem models are removed (APSL 2.0 section 2.2(b)). */
+ 
+ /*
+  * Copyright (c) 1983, 1993
+@@ -1137,10 +1138,6 @@ netem_parse_args(struct if_netem_params
+ 			argc--, argv++;
+ 			if (strcmp(*argv, "nlc") == 0) {
+ 				p->ifnetem_model = IF_NETEM_MODEL_NLC;
+-			} else if (strcmp(*argv, "iod") == 0) {
+-				p->ifnetem_model = IF_NETEM_MODEL_IOD;
+-			} else if (strcmp(*argv, "fpd") == 0) {
+-				p->ifnetem_model = IF_NETEM_MODEL_FPD;
+ 			} else {
+ 				err(1, "Invalid model '%s'", *argv);
+ 			}
+@@ -1297,12 +1294,6 @@ netem_model_str(if_netem_model_t model)
+ 		case IF_NETEM_MODEL_NLC:
+ 			return ("Network link conditioner");
+ 			break;
+-		case IF_NETEM_MODEL_IOD:
+-			return ("In-order delivery");
+-			break;
+-		case IF_NETEM_MODEL_FPD:
+-			return ("Fast packet delivery");
+-			break;
+ 		default:
+ 			return ("unknown");
+ 			break;
+--- a/ndp.tproj/ndp.c
++++ b/ndp.tproj/ndp.c
+@@ -25,6 +25,7 @@
+  *
+  * @APPLE_OSREFERENCE_LICENSE_HEADER_END@
+  */
++/* Modified 2026-11-01: sysctlbyname gets 0 for the new value length (APSL 2.0 section 2.2(b)). */
+ /*
+  * Copyright (C) 1995, 1996, 1997, 1998, and 1999 WIDE Project.
+  * All rights reserved.
+@@ -1946,7 +1947,7 @@ read_cga_parameters(void)
+ 
+ 	oldn = sizeof oldb;
+ 	error = sysctlbyname("net.inet6.send.cga_parameters", oldb, &oldn,
+-	    NULL, NULL);
++	    NULL, 0);
+ 	if (error != 0) {
+ 		warn("sysctlbyname");
+ 		return EX_OSERR;
+--- a/netstat.tproj/main.c
++++ b/netstat.tproj/main.c
+@@ -25,6 +25,7 @@
+  * 
+  * @APPLE_OSREFERENCE_LICENSE_HEADER_END@
+  */
++/* Modified 2026-11-01: pr_reinit gets its arguments in the declared order (APSL 2.0 section 2.2(b)). */
+ /*
+  * Copyright (c) 1983, 1988, 1993
+  *	Regents of the University of California.  All rights reserved.
+@@ -733,7 +734,7 @@ reinitalize_protocols(struct netstat_par
+ 	for (tpp = protoprotox; *tpp; tpp++) {
+ 		for (tp = *tpp; tp->pr_name; tp++) {
+ 			if (tp->pr_reinit != NULL) {
+-				tp->pr_reinit(params, tp->pr_name, tp->pr_protocol, AF_UNSPEC);
++				tp->pr_reinit(params, tp->pr_protocol, tp->pr_name, AF_UNSPEC);
+ 			}
+ 		}
+ 	}

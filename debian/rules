@@ -1,0 +1,128 @@
+#!/usr/bin/make -f
+# SPDX-License-Identifier: BSD-2-Clause
+# Copyright (c) 2026 The Blueberry Pie OS Authors
+
+include /usr/share/pietoolchain/rules.mk
+
+PRIVATE := -I$(SDK)/System/Library/Frameworks/System.framework/PrivateHeaders
+
+TOOLS := arp dnctl ifconfig kdumpd ndp netstat ping ping6 rarpd route rtsol spray traceroute traceroute6
+
+arp_SRCS := arp.tproj/arp.c
+arp_DIR := usr/sbin
+arp_FLAGS := $(PRIVATE)
+arp_LIBS := -lnetwork_cmds_lib
+arp_MANS := arp.tproj/arp.8:man8
+
+dnctl_SRCS := dnctl/dnctl.c
+dnctl_DIR := usr/sbin
+dnctl_FLAGS := $(PRIVATE)
+dnctl_MANS := dnctl/dnctl.8:man8
+
+ifconfig_SRCS := ifconfig.tproj/ifbond.c ifconfig.tproj/ifconfig.c ifconfig.tproj/ifmedia.c \
+	ifconfig.tproj/ifvlan.c ifconfig.tproj/af_inet.c ifconfig.tproj/af_inet6.c \
+	ifconfig.tproj/af_link.c ifconfig.tproj/ifbridge.c ifconfig.tproj/ifclone.c \
+	ifconfig.tproj/iffake.c ifconfig.tproj/nexus.c
+ifconfig_DIR := sbin
+ifconfig_FLAGS := $(PRIVATE)
+ifconfig_MANS := ifconfig.tproj/ifconfig.8:man8
+
+kdumpd_SRCS := kdumpd.tproj/kdumpd.c kdumpd.tproj/kdumpsubs.c
+kdumpd_DIR := usr/libexec
+kdumpd_LIBS := -lnetwork_cmds_lib
+kdumpd_MANS := kdumpd.tproj/kdumpd.8:man8
+
+ndp_SRCS := ndp.tproj/ndp.c
+ndp_DIR := usr/sbin
+ndp_FLAGS := $(PRIVATE)
+ndp_MANS := ndp.tproj/ndp.8:man8
+
+netstat_SRCS := netstat.tproj/bpf.c netstat.tproj/data.c netstat.tproj/if.c netstat.tproj/inet.c \
+	netstat.tproj/inet6.c netstat.tproj/ipsec.c netstat.tproj/main.c netstat.tproj/vsock.c \
+	netstat.tproj/mbuf.c netstat.tproj/mcast.c netstat.tproj/systm.c netstat.tproj/route.c \
+	netstat.tproj/tp_astring.c netstat.tproj/mptcp.c netstat.tproj/unix.c netstat.tproj/misc.c
+netstat_DIR := usr/sbin
+netstat_FLAGS := -DINET6 -DIPSEC $(PRIVATE)
+netstat_MANS := netstat.tproj/netstat.1:man1
+
+ping_SRCS := ping.tproj/ping.c
+ping_DIR := sbin
+ping_FLAGS := $(PRIVATE)
+ping_LIBS := -lnetwork_cmds_lib
+ping_MANS := ping.tproj/ping.8:man8
+
+ping6_SRCS := ping6.tproj/md5.c ping6.tproj/ping6.c
+ping6_DIR := sbin
+ping6_FLAGS := $(PRIVATE)
+ping6_LIBS := -lnetwork_cmds_lib -lipsec
+ping6_MANS := ping6.tproj/ping6.8:man8
+
+rarpd_SRCS := rarpd.tproj/rarpd.c
+rarpd_DIR := usr/sbin
+rarpd_MANS := rarpd.tproj/rarpd.8:man8
+
+route_SRCS := route.tproj/route.c
+route_DIR := sbin
+route_FLAGS := -DINET6 $(PRIVATE)
+route_LIBS := -lnetwork_cmds_lib
+route_MANS := route.tproj/route.8:man8
+
+rtsol_SRCS := rtsol.tproj/dump.c rtsol.tproj/if.c rtsol.tproj/probe.c rtsol.tproj/rtsock.c \
+	rtsol.tproj/rtsol.c rtsol.tproj/rtsold.c
+rtsol_DIR := sbin
+rtsol_FLAGS := -DHAVE_GETIFADDRS $(PRIVATE)
+rtsol_MANS := rtsol.tproj/rtsol.8:man8
+LINKS := sbin/rtsol:usr/sbin/rtsold
+
+spray_SRCS := spray.tproj/spray.c spray.tproj/spray_xdr.c
+spray_DIR := usr/sbin
+spray_MANS := spray.tproj/spray.8:man8
+
+traceroute_SRCS := traceroute.tproj/as.c traceroute.tproj/findsaddr-socket.c \
+	traceroute.tproj/ifaddrlist.c traceroute.tproj/traceroute.c version.c
+traceroute_DIR := usr/sbin
+traceroute_FLAGS := -DHAVE_SOCKADDR_SA_LEN -I$(CURDIR)/debian $(PRIVATE)
+traceroute_LIBS := -lpcap -lnetwork_cmds_lib
+traceroute_MODE := 4555
+traceroute_MANS := traceroute.tproj/traceroute.8:man8
+
+traceroute6_SRCS := traceroute.tproj/as.c traceroute.tproj/findsaddr-socket.c \
+	traceroute.tproj/ifaddrlist.c version.c traceroute6.tproj/traceroute6.c
+traceroute6_DIR := usr/sbin
+traceroute6_FLAGS := -DIPSEC -I$(SRCROOT)/traceroute.tproj -I$(CURDIR)/debian $(PRIVATE)
+traceroute6_LIBS := -lnetwork_cmds_lib -lpcap -lipsec
+traceroute6_MODE := 4555
+traceroute6_MANS := traceroute6.tproj/traceroute6.8:man8
+
+LIB_SRCS := network_cmds_lib/network_cmds_lib.c network_cmds_lib/gmt2local.c
+LIB := $(OBJ)/libnetwork_cmds_lib.a
+TOOLS_CFLAGS := -I$(SRCROOT)/network_cmds_lib -DUSE_RFC2292BIS=1 -D__APPLE_USE_RFC_3542=1
+TOOLS_LDFLAGS := -L$(OBJ)
+NOTICE := $(OBJ)/apsl-notice
+TOOLS_LDFLAGS += -Wl,-sectcreate,__TEXT,__source,$(NOTICE)
+include $(PIETOOLCHAIN)/tools.mk
+
+$(NOTICE):
+	@mkdir -p $(OBJ)
+	printf '%s\n' 'This program contains Covered Code under the Apple Public Source License 2.0.' \
+		'Its Source Code is available under that License from https://github.com/blueberrypieos/network-cmds.' > $@
+
+$(OBJ)/traceroute/version.c $(OBJ)/traceroute6/version.c:
+	@mkdir -p $(dir $@)
+	printf 'char version[] = "1.4a12+Darwin";\n' > $@
+
+$(OBJ)/lib/%.o: $(SRCROOT)/%.c
+	@mkdir -p $(dir $@)
+	$(CC) $(TOOLS_BASE_CFLAGS) -c $< -o $@
+
+$(LIB): $(addprefix $(OBJ)/lib/,$(LIB_SRCS:.c=.o))
+	rm -f $@
+	$(LIBTOOL) -static -o $@ $^
+
+$(TOOL_BINS): $(LIB)
+$(TOOL_BINS): | $(NOTICE)
+
+all: $(TOOL_BINS)
+install: install-tools
+	ln -f $(ROOT)/usr/share/man/man8/rtsol.8 $(ROOT)/usr/share/man/man8/rtsold.8
+.PHONY: all install
