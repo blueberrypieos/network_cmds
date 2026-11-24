@@ -1,3 +1,10 @@
+network-cmds (741.100.2+ds1-2) blueberry-pie-os; urgency=medium
+
+  * The source URL names the GitHub repository.
+  * Build-Depend on pietoolchain-host and pietoolchain-sdk.
+
+ -- Maxwell <maxwell@blueberrypieos.com>  Wed, 11 Nov 2026 23:04:38 +0000
+
 network-cmds (741.100.2+ds1-1) blueberry-pie-os; urgency=medium
 
   * network_cmds 741.100.2

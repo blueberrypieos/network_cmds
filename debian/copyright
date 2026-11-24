@@ -97,10 +97,6 @@ License: APSL-2.0 AND LicenseRef-BSD-4-Clause-Winning-Strategies
 Comment: The Apple code was originally distributed under APSL-1.0. It is used
  here under APSL-2.0, as permitted by section 7 of APSL-1.0.
 
-Files: ifconfig.tproj/ifclone.c
-Copyright: 1983, 1993 The Regents of the University of California
-License: LicenseRef-BSD-3-Clause-UC-clause4
-
 Files: ping6.tproj/md5.c
  ping6.tproj/md5.h
  rtsol.tproj/rtsol.c
@@ -243,7 +239,8 @@ Files: traceroute.tproj/traceroute.8
 Copyright: 1989, 1995-1997, 1999-2000 The Regents of the University of California
 License: BSD-4.3TAHOE
 
-Files: kdumpd.tproj/kdumpsubs.c
+Files: ifconfig.tproj/ifclone.c
+ kdumpd.tproj/kdumpsubs.c
 Copyright: 1983, 1993 The Regents of the University of California
 License: LicenseRef-BSD-3-Clause-UC-clause4
 
@@ -300,13 +297,18 @@ Copyright: 2026 The Blueberry Pie OS Authors
 License: BSD-2-Clause
 
 Files: debian/patches/0001-sdk-compatibility.patch
-Copyright: 2026 The Blueberry Pie OS Authors
+Copyright: 1983-1985, 1991, 1993 The Regents of the University of California
+ 1999-2025 Apple Inc.
+ 1995, 1996, 1997, 1998, and 1999 WIDE Project
+ 1983, 1988, 1993 Regents of the University of California
+ Poul-Henning Kamp <phk@FreeBSD.org>
+ 2026 The Blueberry Pie OS Authors
 License: LicenseRef-APSL-2.0-OS-reference AND Beerware AND LicenseRef-BSD-3-Clause-UC-clause4 AND LicenseRef-BSD-3-Clause-WIDE AND BSD-4-Clause-UC
 
 License: APSL-2.0
  This program contains Covered Code under the Apple Public Source License
  2.0. Its Source Code is available under that License from
- https://github.com/blueberrypieos/network-cmds.
+ https://github.com/blueberrypieos/network_cmds.
  .
  APPLE PUBLIC SOURCE LICENSE
  Version 2.0 - August 6, 2003
@@ -679,7 +681,7 @@ License: APSL-2.0
 License: LicenseRef-APSL-2.0-OS-reference
  This program contains Covered Code under the Apple Public Source License
  2.0. Its Source Code is available under that License from
- https://github.com/blueberrypieos/network-cmds.
+ https://github.com/blueberrypieos/network_cmds.
  .
  APPLE PUBLIC SOURCE LICENSE
  Version 2.0 - August 6, 2003

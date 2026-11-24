@@ -105,7 +105,7 @@ include $(PIETOOLCHAIN)/tools.mk
 $(NOTICE):
 	@mkdir -p $(OBJ)
 	printf '%s\n' 'This program contains Covered Code under the Apple Public Source License 2.0.' \
-		'Its Source Code is available under that License from https://github.com/blueberrypieos/network-cmds.' > $@
+		'Its Source Code is available under that License from https://github.com/blueberrypieos/network_cmds.' > $@
 
 $(OBJ)/traceroute/version.c $(OBJ)/traceroute6/version.c:
 	@mkdir -p $(dir $@)
